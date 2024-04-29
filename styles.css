@@ -1,0 +1,54 @@
+#chessboard {
+    display: grid;
+    grid-template-columns: repeat(8, 50px);
+    grid-template-rows: repeat(8, 50px);
+    width: 400px;
+    height: 400px;
+    margin: 20px auto;
+}
+
+.cell {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.black, .white-pawn {
+    background-color: #769656;
+}
+
+.white, .black-pawn {
+    background-color: #eeeed2;
+}
+
+.pawn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    font-size: 10px; /* Smaller font size for the HP */
+    color: #000;
+}
+
+.white-pawn {
+    background-color: #fff;
+}
+
+.black-pawn {
+    background-color: #000;
+    color: #fff; /* Ensuring HP text is visible on black pawns */
+}
+
+.highlight {
+    border: 2px solid red;
+}
+
+.available {
+    background-color: rgba(255, 0, 0, 0.3);
+}
