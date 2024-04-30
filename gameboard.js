@@ -6,42 +6,55 @@ const GameBoard = {
     holeMargin: 10,
     colors: ['red', 'yellow', 'black', 'white', 'green', 'blue'],
     directionOffset: [[1, 0], [0, 1], [-1, 1], [-1, 0], [0, -1], [1, -1]],
-    pieces : {
-        '-4,8': { color: 'green', hp: 1 },
-        '-3,7': { color: 'green', hp: 1 },
-        '-4,7': { color: 'green', hp: 1 },
-        '-2,6': { color: 'green', hp: 1 },
-        '-3,6': { color: 'green', hp: 1 },
-        '-4,6': { color: 'green', hp: 1 },
-        '-1,5': { color: 'green', hp: 1 },
-        '-2,5': { color: 'green', hp: 1 },
-        '-3,5': { color: 'green', hp: 1 },
-        '-4,5': { color: 'green', hp: 1 },
-        '4,-8': { color: 'blue', hp: 1 },
-        '3,-7': { color: 'blue', hp: 1 },
-        '4,-7': { color: 'blue', hp: 1 },
-        '2,-6': { color: 'blue', hp: 1 },
-        '3,-6': { color: 'blue', hp: 1 },
-        '4,-6': { color: 'blue', hp: 1 },
-        '1,-5': { color: 'blue', hp: 1 },
-        '2,-5': { color: 'blue', hp: 1 },
-        '3,-5': { color: 'blue', hp: 1 },
-        '4,-5': { color: 'blue', hp: 1 },
+    pieces: {
+        '1,-4': { color: 'blue', hp: 1 },
+        '2,-4': { color: 'blue', hp: 1 },
+        '3,-4': { color: 'blue', hp: 1 },
+        '3,-3': { color: 'blue', hp: 1 },
+        '2,-3': { color: 'blue', hp: 1 },
+        '1,-3': { color: 'blue', hp: 1 },
+        '0,-3': { color: 'blue', hp: 1 },
+        '0,-2': { color: 'blue', hp: 1 },
+        '1,-2': { color: 'blue', hp: 1 },
+        '2,-2': { color: 'blue', hp: 1 },
+        '-3,4': { color: 'green', hp: 1 },
+        '-2,4': { color: 'green', hp: 1 },
+        '-1,4': { color: 'green', hp: 1 },
+        '0,3': { color: 'green', hp: 1 },
+        '-1,3': { color: 'green', hp: 1 },
+        '-2,3': { color: 'green', hp: 1 },
+        '-3,3': { color: 'green', hp: 1 },
+        '-2,2': { color: 'green', hp: 1 },
+        '-1,2': { color: 'green', hp: 1 },
+        '0,2': { color: 'green', hp: 1 },
     },
     selectedHole: null,
     availableMoves: [],
 /*
-Clicked at  -4 8
-gameboard.js:49 Clicked at  -3 7
-gameboard.js:49 Clicked at  -4 7
-gameboard.js:49 Clicked at  -2 6
-gameboard.js:49 Clicked at  -3 6
-gameboard.js:49 Clicked at  -4 6
-gameboard.js:49 Clicked at  -1 5
-gameboard.js:49 Clicked at  -2 5
-gameboard.js:49 Clicked at  -3 5
-gameboard.js:49 Clicked at  -4 5
+Blue:
+Clicked at  1 -4
+gameboard.js:58 Clicked at  2 -4
+gameboard.js:58 Clicked at  3 -4
+gameboard.js:58 Clicked at  3 -3
+gameboard.js:58 Clicked at  2 -3
+gameboard.js:58 Clicked at  1 -3
+gameboard.js:58 Clicked at  0 -3
+gameboard.js:58 Clicked at  0 -2
+gameboard.js:58 Clicked at  1 -2
+gameboard.js:58 Clicked at  2 -2
+Green: 
+Clicked at  -3 4
+gameboard.js:58 Clicked at  -2 4
+gameboard.js:58 Clicked at  -1 4
+gameboard.js:58 Clicked at  0 3
+gameboard.js:58 Clicked at  -1 3
+gameboard.js:58 Clicked at  -2 3
+gameboard.js:58 Clicked at  -3 3
+gameboard.js:58 Clicked at  -2 2
+gameboard.js:58 Clicked at  -1 2
+gameboard.js:58 Clicked at  0 2
 */
+
 
 
     init() {
@@ -130,7 +143,7 @@ gameboard.js:49 Clicked at  -4 5
         return (u <= 4 
             && v <= 4
             && u+v >= -4)
-            ||
+            &&
             ( u >= -4
             && v >= -4
             && u+v <= 4);
