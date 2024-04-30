@@ -52,3 +52,53 @@
 .available {
     background-color: rgba(255, 0, 0, 0.3);
 }
+
+
+#hexGrid {
+    display: flex;
+    flex-wrap: wrap;
+    width: 660px; /* Adjust as needed */
+    margin: 0 auto;
+    padding: 30px;
+}
+
+.hex {
+    position: relative;
+    width: 60px; /* Adjust as needed */
+    height: 103.92px; /* 1.732 (sqrt(3)) times the width */
+    background-color: #ccc;
+    margin: 51.96px 0; /* Half the height */
+    box-sizing: border-box;
+}
+
+.hex::before, .hex::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    border-left: 30px solid transparent; /* Half the width */
+    border-right: 30px solid transparent; /* Half the width */
+}
+
+.hex::before {
+    top: -51.96px; /* Half the height */
+    border-bottom: 51.96px solid #ccc; /* Half the height */
+}
+
+.hex::after {
+    bottom: -51.96px; /* Half the height */
+    border-top: 51.96px solid #ccc; /* Half the height */
+}
+
+/* .hex:nth-child(6n+2),
+.hex:nth-child(6n+3),
+.hex:nth-child(6n+4),
+.hex:nth-child(6n+5) {
+    margin-top: 0;
+    margin-bottom: 103.92px; 
+}
+
+.hex:nth-child(6n+4),
+.hex:nth-child(6n+5),
+.hex:nth-child(6n+6) {
+    margin-left: 90px; 
+} */
