@@ -1,3 +1,6 @@
+document.addEventListener('DOMContentLoaded', function() {
+    GameBoard.init();
+});
 const GameBoard = {
     canvas: null,
     ctx: null,
