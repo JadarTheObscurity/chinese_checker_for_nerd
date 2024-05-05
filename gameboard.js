@@ -33,6 +33,9 @@ const GameBoard = {
     },
     selectedHole: null,
     availableMoves: [],
+    jumpedPieceList: [],
+    currentMoveColor: null,
+    canJump: true,
 
 
 
@@ -47,17 +50,26 @@ const GameBoard = {
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
             const clickedHole = this.getHoleAt(x, y);
-            let canJump = true;
             console.log("Clicked at ", clickedHole.u, clickedHole.v)
             //check if clickedHole is in availableMoves, if it is, move the pawn there
             if (this.selectedHole && this.availableMoves.find(move => move.u === clickedHole.u && move.v === clickedHole.v)) {
+                // Update  current move color and clear jumpedPieceList
+                const selectedPiece = this.getPiece(this.selectedHole);
+                console.log("Current move color ", this.currentMoveColor);
+                if (selectedPiece.color !== this.currentMoveColor) {
+                    this.jumpedPieceList = [];
+                    this.currentMoveColor = selectedPiece.color;
+                    this.canJump = true;
+                }
+                
                 // check if it's a jump move
                 const move = this.availableMoves.find(move => move.u === clickedHole.u && move.v === clickedHole.v);
                 if (move.type === 'jump') {
                     const jumpedHole = { u: (this.selectedHole.u + clickedHole.u) / 2, v: (this.selectedHole.v + clickedHole.v) / 2 };
                     const jumpedPiece = this.getPiece(jumpedHole);
-                    const selectedPiece = this.getPiece(this.selectedHole);
-                    canJump = selectedPiece.color === jumpedPiece.color;
+                    if (selectedPiece.color !== jumpedPiece.color) {
+                        this.canJump = false;
+                    }
                     this.jumpPieces(this.selectedHole, clickedHole);
                 } else {
                     this.pieces[`${clickedHole.u},${clickedHole.v}`] = this.pieces[`${this.selectedHole.u},${this.selectedHole.v}`];
@@ -72,7 +84,7 @@ const GameBoard = {
             if (this.pieces[`${clickedHole.u},${clickedHole.v}`] && this.pieces[`${clickedHole.u},${clickedHole.v}`].hp !== 0) {
                 this.selectedHole = clickedHole;
                 // update available moves
-                this.availableMoves = this.getAvailableMoves(clickedHole, canJump);
+                this.availableMoves = this.getAvailableMoves(clickedHole, this.canJump);
                 console.log(this.availableMoves);
             } else {
                 this.selectedHole = null;
@@ -82,6 +94,7 @@ const GameBoard = {
     },
     getAvailableMoves(hole, canJump) {
     const moves = [];
+    console.log("jumped piece ", this.jumpedPieceList)
     this.directionOffset.forEach(offset => {
         const walkNeighbor = { u: hole.u + offset[0], v: hole.v + offset[1] };
         if (!this.pieces[`${walkNeighbor.u},${walkNeighbor.v}`] && this.valid_coord(walkNeighbor.u, walkNeighbor.v)) {
@@ -90,7 +103,10 @@ const GameBoard = {
 
         const jumpNeighbor = { u: hole.u + 2 * offset[0], v: hole.v + 2 * offset[1] };
         if (canJump && this.pieces[`${walkNeighbor.u},${walkNeighbor.v}`] && !this.pieces[`${jumpNeighbor.u},${jumpNeighbor.v}`] && this.valid_coord(jumpNeighbor.u, jumpNeighbor.v)) {
-            moves.push({ ...jumpNeighbor, type: 'jump' });
+            // Check if the jumped piece is not in the jumpedPieceList
+            if (!this.jumpedPieceList.includes(this.pieces[`${walkNeighbor.u},${walkNeighbor.v}`])) {
+                moves.push({ ...jumpNeighbor, type: 'jump' });
+            }
         }
     });
     return moves;
@@ -150,6 +166,8 @@ const GameBoard = {
                 jumpedPiece.hp *= movingPiece.hp;
             }
             jumpedPiece.hp %= 36;
+            // Add the jummped piece to this.jumpedPieceList
+            this.jumpedPieceList.push(jumpedPiece);
             delete this.pieces[`${fromHole.u},${fromHole.v}`];
             this.pieces[`${toHole.u},${toHole.v}`] = movingPiece;
         }
@@ -201,7 +219,6 @@ const GameBoard = {
                 const x = move.u * base_u.x + move.v * base_v.x;
                 const y = move.u * base_u.y + move.v * base_v.y;
                 const selectedPiece = this.pieces[`${this.selectedHole.u},${this.selectedHole.v}`];
-                console.log("selectedPiece", selectedPiece)
                 const colorMap = {
                     'red': '255, 0, 0',
                     'blue': '0, 0, 255',
