@@ -33,30 +33,6 @@ const GameBoard = {
     },
     selectedHole: null,
     availableMoves: [],
-/*
-Blue:
-Clicked at  1 -4
-gameboard.js:58 Clicked at  2 -4
-gameboard.js:58 Clicked at  3 -4
-gameboard.js:58 Clicked at  3 -3
-gameboard.js:58 Clicked at  2 -3
-gameboard.js:58 Clicked at  1 -3
-gameboard.js:58 Clicked at  0 -3
-gameboard.js:58 Clicked at  0 -2
-gameboard.js:58 Clicked at  1 -2
-gameboard.js:58 Clicked at  2 -2
-Green: 
-Clicked at  -3 4
-gameboard.js:58 Clicked at  -2 4
-gameboard.js:58 Clicked at  -1 4
-gameboard.js:58 Clicked at  0 3
-gameboard.js:58 Clicked at  -1 3
-gameboard.js:58 Clicked at  -2 3
-gameboard.js:58 Clicked at  -3 3
-gameboard.js:58 Clicked at  -2 2
-gameboard.js:58 Clicked at  -1 2
-gameboard.js:58 Clicked at  0 2
-*/
 
 
 
@@ -71,12 +47,17 @@ gameboard.js:58 Clicked at  0 2
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
             const clickedHole = this.getHoleAt(x, y);
+            let canJump = true;
             console.log("Clicked at ", clickedHole.u, clickedHole.v)
             //check if clickedHole is in availableMoves, if it is, move the pawn there
             if (this.selectedHole && this.availableMoves.find(move => move.u === clickedHole.u && move.v === clickedHole.v)) {
                 // check if it's a jump move
                 const move = this.availableMoves.find(move => move.u === clickedHole.u && move.v === clickedHole.v);
                 if (move.type === 'jump') {
+                    const jumpedHole = { u: (this.selectedHole.u + clickedHole.u) / 2, v: (this.selectedHole.v + clickedHole.v) / 2 };
+                    const jumpedPiece = this.getPiece(jumpedHole);
+                    const selectedPiece = this.getPiece(this.selectedHole);
+                    canJump = selectedPiece.color === jumpedPiece.color;
                     this.jumpPieces(this.selectedHole, clickedHole);
                 } else {
                     this.pieces[`${clickedHole.u},${clickedHole.v}`] = this.pieces[`${this.selectedHole.u},${this.selectedHole.v}`];
@@ -91,7 +72,7 @@ gameboard.js:58 Clicked at  0 2
             if (this.pieces[`${clickedHole.u},${clickedHole.v}`] && this.pieces[`${clickedHole.u},${clickedHole.v}`].hp !== 0) {
                 this.selectedHole = clickedHole;
                 // update available moves
-                this.availableMoves = this.getAvailableMoves(clickedHole);
+                this.availableMoves = this.getAvailableMoves(clickedHole, canJump);
                 console.log(this.availableMoves);
             } else {
                 this.selectedHole = null;
@@ -99,7 +80,7 @@ gameboard.js:58 Clicked at  0 2
             this.drawBoard();
         }); 
     },
-    getAvailableMoves(hole) {
+    getAvailableMoves(hole, canJump) {
     const moves = [];
     this.directionOffset.forEach(offset => {
         const walkNeighbor = { u: hole.u + offset[0], v: hole.v + offset[1] };
@@ -108,7 +89,7 @@ gameboard.js:58 Clicked at  0 2
         }
 
         const jumpNeighbor = { u: hole.u + 2 * offset[0], v: hole.v + 2 * offset[1] };
-        if (this.pieces[`${walkNeighbor.u},${walkNeighbor.v}`] && !this.pieces[`${jumpNeighbor.u},${jumpNeighbor.v}`] && this.valid_coord(jumpNeighbor.u, jumpNeighbor.v)) {
+        if (canJump && this.pieces[`${walkNeighbor.u},${walkNeighbor.v}`] && !this.pieces[`${jumpNeighbor.u},${jumpNeighbor.v}`] && this.valid_coord(jumpNeighbor.u, jumpNeighbor.v)) {
             moves.push({ ...jumpNeighbor, type: 'jump' });
         }
     });
@@ -150,6 +131,11 @@ gameboard.js:58 Clicked at  0 2
             ( u >= -4
             && v >= -4
             && u+v <= 4);
+    },
+
+    // Write a function getPiece(hole)
+    getPiece(hole) {
+        return this.pieces[`${hole.u},${hole.v}`];
     },
 
     jumpPieces(fromHole, toHole) {
