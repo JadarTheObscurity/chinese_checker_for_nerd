@@ -81,11 +81,16 @@ const GameBoard = {
                 if (move.type === 'walk') return;
             }
 
-            if (this.pieces[`${clickedHole.u},${clickedHole.v}`] && this.pieces[`${clickedHole.u},${clickedHole.v}`].hp !== 0) {
+            if (this.pieces[`${clickedHole.u},${clickedHole.v}`] ) {
                 this.selectedHole = clickedHole;
+                const selectedPiece = this.getPiece(this.selectedHole);
                 // update available moves
-                this.availableMoves = this.getAvailableMoves(clickedHole, this.canJump);
-                console.log(this.availableMoves);
+                if (this.pieces[`${clickedHole.u},${clickedHole.v}`].hp !== 0) {
+                    this.availableMoves = this.getAvailableMoves(clickedHole, this.canJump || selectedPiece.color !== this.currentMoveColor);
+                }
+                else {
+                    this.availableMoves = this.getAvailableMoves(clickedHole, false);
+                }
             } else {
                 this.selectedHole = null;
             }
@@ -160,7 +165,9 @@ const GameBoard = {
         const movingPiece = this.pieces[`${fromHole.u},${fromHole.v}`];
         if (jumpedPiece && movingPiece) {
             if (jumpedPiece.color === movingPiece.color) {
-                jumpedPiece.hp += movingPiece.hp;
+                if (jumpedPiece.hp !== 0) {
+                    jumpedPiece.hp += movingPiece.hp;
+                }
             }
             else {
                 jumpedPiece.hp *= movingPiece.hp;
