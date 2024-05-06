@@ -51,7 +51,6 @@ const GameBoard = {
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
             const clickedHole = this.getHoleAt(x, y);
-            console.log("Clicked at ", clickedHole.u, clickedHole.v)
             //check if clickedHole is in availableMoves, if it is, move the pawn there
             if (this.selectedHole && this.availableMoves.find(move => move.u === clickedHole.u && move.v === clickedHole.v)) {
                 // Update  current move color and clear jumpedPieceList
@@ -92,7 +91,7 @@ const GameBoard = {
                 const selectedPiece = this.getPiece(this.selectedHole);
                 // update available moves
                 if (this.pieces[`${clickedHole.u},${clickedHole.v}`].hp !== 0) {
-                    this.availableMoves = this.getAvailableMoves(clickedHole, this.canWalk || selectedPiece.color !== this.currentMoveColor, this.canJump || selectedPiece.color !== this.currentMoveColorgig);
+                    this.availableMoves = this.getAvailableMoves(clickedHole, this.canWalk || selectedPiece.color !== this.currentMoveColor, this.canJump || selectedPiece.color !== this.currentMoveColor);
                 }
                 else {
                     // If hp is zero, can only walk, no jump
