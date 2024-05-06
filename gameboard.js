@@ -35,6 +35,7 @@ const GameBoard = {
     availableMoves: [],
     jumpedPieceList: [],
     currentMoveColor: null,
+    canWalk: true,
     canJump: true,
 
 
@@ -59,19 +60,24 @@ const GameBoard = {
                 if (selectedPiece.color !== this.currentMoveColor) {
                     this.jumpedPieceList = [];
                     this.currentMoveColor = selectedPiece.color;
+                    this.canWalk = true;
                     this.canJump = true;
                 }
                 
-                // check if it's a jump move
                 const move = this.availableMoves.find(move => move.u === clickedHole.u && move.v === clickedHole.v);
                 if (move.type === 'jump') {
+                    // check if it's a jump move
                     const jumpedHole = { u: (this.selectedHole.u + clickedHole.u) / 2, v: (this.selectedHole.v + clickedHole.v) / 2 };
                     const jumpedPiece = this.getPiece(jumpedHole);
-                    if (selectedPiece.color !== jumpedPiece.color) {
-                        this.canJump = false;
-                    }
+                    this.canWalk = selectedPiece.color === jumpedPiece.color;
+
                     this.jumpPieces(this.selectedHole, clickedHole);
-                } else {
+                } 
+                else {
+                    // A walk move
+                    this.canWalk = false;
+                    this.canJump = false;
+
                     this.pieces[`${clickedHole.u},${clickedHole.v}`] = this.pieces[`${this.selectedHole.u},${this.selectedHole.v}`];
                     delete this.pieces[`${this.selectedHole.u},${this.selectedHole.v}`];
                 }
@@ -86,10 +92,11 @@ const GameBoard = {
                 const selectedPiece = this.getPiece(this.selectedHole);
                 // update available moves
                 if (this.pieces[`${clickedHole.u},${clickedHole.v}`].hp !== 0) {
-                    this.availableMoves = this.getAvailableMoves(clickedHole, this.canJump || selectedPiece.color !== this.currentMoveColor);
+                    this.availableMoves = this.getAvailableMoves(clickedHole, this.canWalk || selectedPiece.color !== this.currentMoveColor, this.canJump || selectedPiece.color !== this.currentMoveColor);
                 }
                 else {
-                    this.availableMoves = this.getAvailableMoves(clickedHole, false);
+                    // If hp is zero, can only walk, no jump
+                    this.availableMoves = this.getAvailableMoves(clickedHole, true, false);
                 }
             } else {
                 this.selectedHole = null;
@@ -97,12 +104,12 @@ const GameBoard = {
             this.drawBoard();
         }); 
     },
-    getAvailableMoves(hole, canJump) {
+    getAvailableMoves(hole, canWalk, canJump) {
     const moves = [];
     console.log("jumped piece ", this.jumpedPieceList)
     this.directionOffset.forEach(offset => {
         const walkNeighbor = { u: hole.u + offset[0], v: hole.v + offset[1] };
-        if (!this.pieces[`${walkNeighbor.u},${walkNeighbor.v}`] && this.valid_coord(walkNeighbor.u, walkNeighbor.v)) {
+        if (canWalk && !this.pieces[`${walkNeighbor.u},${walkNeighbor.v}`] && this.valid_coord(walkNeighbor.u, walkNeighbor.v)) {
             moves.push({ ...walkNeighbor, type: 'walk' });
         }
 
