@@ -89,16 +89,18 @@
     border-top: 51.96px solid #ccc; /* Half the height */
 }
 
-/* .hex:nth-child(6n+2),
-.hex:nth-child(6n+3),
-.hex:nth-child(6n+4),
-.hex:nth-child(6n+5) {
-    margin-top: 0;
-    margin-bottom: 103.92px; 
+#gameContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+}
+#gameInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.hex:nth-child(6n+4),
-.hex:nth-child(6n+5),
-.hex:nth-child(6n+6) {
-    margin-left: 90px; 
-} */
+#blueCounts, #greenCounts {
+    width: 20%; /* Adjust as needed */
+} /*

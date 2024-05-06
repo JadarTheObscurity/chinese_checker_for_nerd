@@ -92,7 +92,7 @@ const GameBoard = {
                 const selectedPiece = this.getPiece(this.selectedHole);
                 // update available moves
                 if (this.pieces[`${clickedHole.u},${clickedHole.v}`].hp !== 0) {
-                    this.availableMoves = this.getAvailableMoves(clickedHole, this.canWalk || selectedPiece.color !== this.currentMoveColor, this.canJump || selectedPiece.color !== this.currentMoveColor);
+                    this.availableMoves = this.getAvailableMoves(clickedHole, this.canWalk || selectedPiece.color !== this.currentMoveColor, this.canJump || selectedPiece.color !== this.currentMoveColorgig);
                 }
                 else {
                     // If hp is zero, can only walk, no jump
@@ -196,6 +196,8 @@ const GameBoard = {
         const holeGap = this.holeRadius * 2 + this.holeMargin;
         const base_u = {x: 1 * holeGap, y: 0}
         const base_v = {x: 0.5 * holeGap, y: 0.8660254038 * holeGap}
+
+        this.displayPieceCounts();
         
         coords = []
         for (let u = -8; u <= 8; u++) {
@@ -259,8 +261,35 @@ const GameBoard = {
         this.ctx.arc(x, y, this.holeRadius * 4 / 5, 0, Math.PI * 2);
         this.ctx.fillStyle = color;
         this.ctx.fill();
+    },
+displayPieceCounts() {
+    const counts = {
+        green: { 0: 0, 6: 0, 12: 0, 18: 0, 24: 0 },
+        blue: { 0: 0, 6: 0, 12: 0, 18: 0, 24: 0 }
+    };
+
+    for (let key in this.pieces) {
+        const piece = this.pieces[key];
+        if ([0, 6, 12, 18, 24].includes(piece.hp) && (piece.color === 'green' || piece.color === 'blue')) {
+            counts[piece.color][piece.hp]++;
+        }
     }
 
+    const greenCountsElement = document.getElementById('greenCounts');
+    const blueCountsElement = document.getElementById('blueCounts');
+
+    greenCountsElement.innerHTML = this.createTable('Green', counts.green);
+    blueCountsElement.innerHTML = this.createTable('Blue', counts.blue);
+},
+
+createTable(color, counts) {
+    let table = `<table><tr><th>${color}</th><th>Count</th></tr>`;
+    for (let hp in counts) {
+        table += `<tr><td>${hp}</td><td>${counts[hp]}</td></tr>`;
+    }
+    table += '</table>';
+    return table;
+}
 
 
 };
